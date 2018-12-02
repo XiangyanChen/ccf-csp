@@ -19,12 +19,20 @@
 
 
 def check(index, n, num_list, new_num_list):
-    if (index == n):
-        if (int((new_num_list[-1] + new_num_list[-2]) / 2) == num_list[-1]):
-            return True
-        else:
-            return False
     for i in range(200):
+        if (index == n):
+            if (int((new_num_list[-1] + new_num_list[-2]) / 2) == num_list[-1]):
+                print(" ".join([str(x) for x in new_num_list]))
+                return True
+            elif (int((new_num_list[-1] + new_num_list[-2]) / 2) < num_list[-1]):
+                new_num_list[index-1] += 1
+                if (int((new_num_list[index - 2-1] + new_num_list[index - 1-1] + new_num_list[index-1]) / 3) > num_list[
+                    index - 1-1]):
+                    return False
+                else:
+                    continue
+            else:
+                return False
         if (index == 0):
             new_num_list[index] = i
             flag = check(index+1, n, num_list, new_num_list)
@@ -58,4 +66,4 @@ if __name__ == "__main__":
     num_list = (list(map(int, input().split())))    #The list of second day price
     new_num_list = [-1] * n #The list of first day price
     check(0, n, num_list, new_num_list)
-    print(" ".join([str(x) for x in new_num_list]))
+    # print(" ".join([str(x) for x in new_num_list]))
