@@ -19,37 +19,81 @@
 7 9 9
 """
 import copy
+
+class Ball:
+    def __init__(self, id, action):
+        self.id = id
+        self.action = action
+        self.index = 0
+    def set_action(self, action):
+        self.action = action
+
+    def get_action(self):
+        return self.action
+
+    def get_id(self):
+        return self.id
+
+    def set_index(self, index):
+        self.index = index
+
+    def get_index(self):
+        return self.index
+
+    def __str__(self):
+        return str(self.id)
 if __name__ == "__main__":
     first_line_list = list(map(int, input().split()))
     n = first_line_list[0]  #the number of balls
     length = first_line_list[1]
     seconds = first_line_list[2] #seconds
     num_list = list(map(int, input().split()))
-    balls_list = [0] * length
-    # initialize
-    for num in num_list:
-        balls_list[num-1] = 2
-
-    for t in range(seconds):
-        temp_balls_list = [0] * length
-        for i in range(len(balls_list)):
-            if (balls_list[i] == 3):
-                # balls_list[i] = 0
-                temp_balls_list[i-1] += 1
-                temp_balls_list[i+1] += 2
-            if (balls_list[i] == 1):
-                temp_balls_list[i-1] += 1
-            if (balls_list[i] == 2):
-                temp_balls_list[i+1] += 2
-        if (temp_balls_list[length-1] == 2):
-            temp_balls_list[length-1] = 1
-        if (temp_balls_list[0] == 1):
-            temp_balls_list[0] = 2
-        balls_list = temp_balls_list
-        # print(" ".join(list(map(str, balls_list))))
-    for index, value in enumerate(balls_list):
-        if (value == 1 or value == 2):
-            print(index+1, end=" ")
-        elif (value == 3):
-            print(index+1, end=" ")
-            print(index+1, end=" ")
+    number_axis = [list() for i in range(length)]
+    ball_list = [Ball(i, "right") for i in range(n)]
+    for index,num in enumerate(num_list):
+        ball = ball_list[index]
+        ball.set_index(num-1)
+        number_axis[num-1].append(ball)
+    for second in range(seconds+2):
+        temp_number_axis = [list() for i in range(length)]
+        for index, element in enumerate(number_axis):
+            if (len(element) == 1):
+                ball = element[0]
+                if (ball.get_action() == "left"):
+                    temp_number_axis[index-1].append(ball)
+                    ball.set_index(index-1)
+                else:
+                    temp_number_axis[index+1].append(ball)
+                    ball.set_index(index+1)
+            elif (len(element) >= 2):
+                for ball in element:
+                    if (ball.get_action() == "left"):
+                        temp_number_axis[index+1].append(ball)
+                        ball.set_index(index+1)
+                        ball.set_action("right")
+                    else:
+                        temp_number_axis[index-1].append(ball)
+                        ball.set_index(index-1)
+                        ball.set_action("left")
+        element = temp_number_axis[0]
+        if (len(element) > 0):
+            for ball in element:
+                ball.set_action("right")
+        element = temp_number_axis[length-1]
+        if (len(element) > 0):
+            for ball in element:
+                ball.set_action("left")
+        number_axis = temp_number_axis
+        for element in number_axis:
+            if (len(element) >= 1):
+                print("[", end=" ")
+                for x in element:
+                    print(x, end=" ")
+                print(']', end=" ")
+            else:
+                print("[ ]", end=" ")
+        print()
+        # for ball in ball_list:
+        #     print(ball.get_index()+1, end=" ")
+    for ball in ball_list:
+        print(ball.get_index()+1, end=" ")
