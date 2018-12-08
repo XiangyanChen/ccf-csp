@@ -48,52 +48,46 @@ if __name__ == "__main__":
     length = first_line_list[1]
     seconds = first_line_list[2] #seconds
     num_list = list(map(int, input().split()))
-    number_axis = [list() for i in range(length)]
+    number_axis = [list() for i in range(length+1)]
     ball_list = [Ball(i, "right") for i in range(n)]
     for index,num in enumerate(num_list):
         ball = ball_list[index]
-        ball.set_index(num-1)
-        number_axis[num-1].append(ball)
-    for second in range(seconds+2):
-        temp_number_axis = [list() for i in range(length)]
-        for index, element in enumerate(number_axis):
-            if (len(element) == 1):
-                ball = element[0]
-                if (ball.get_action() == "left"):
-                    temp_number_axis[index-1].append(ball)
-                    ball.set_index(index-1)
-                else:
-                    temp_number_axis[index+1].append(ball)
-                    ball.set_index(index+1)
-            elif (len(element) >= 2):
-                for ball in element:
-                    if (ball.get_action() == "left"):
-                        temp_number_axis[index+1].append(ball)
-                        ball.set_index(index+1)
-                        ball.set_action("right")
-                    else:
-                        temp_number_axis[index-1].append(ball)
-                        ball.set_index(index-1)
-                        ball.set_action("left")
-        element = temp_number_axis[0]
+        ball.set_index(num)
+        number_axis[num].append(ball)
+    for second in range(seconds):
+        element = number_axis[0]
         if (len(element) > 0):
             for ball in element:
                 ball.set_action("right")
-        element = temp_number_axis[length-1]
+        element = number_axis[length]
         if (len(element) > 0):
             for ball in element:
                 ball.set_action("left")
+        temp_number_axis = [list() for i in range(length+1)]
+        for index, element in enumerate(number_axis):
+            if (len(element) >= 2):
+                for ball in element:
+                    if (ball.get_action() == "left"):
+                        ball.set_action("right")
+                    else:
+                        ball.set_action("left")
+            for ball in element:
+                if (ball.get_action() == "left"):
+                    temp_number_axis[index-1].append(ball)
+                    ball.set_index(index - 1)
+                else:
+                    temp_number_axis[index+1].append(ball)
+                    ball.set_index(index + 1)
         number_axis = temp_number_axis
-        for element in number_axis:
-            if (len(element) >= 1):
-                print("[", end=" ")
-                for x in element:
-                    print(x, end=" ")
-                print(']', end=" ")
-            else:
-                print("[ ]", end=" ")
-        print()
-        # for ball in ball_list:
-        #     print(ball.get_index()+1, end=" ")
-    for ball in ball_list:
-        print(ball.get_index()+1, end=" ")
+        # for element in number_axis:
+        #     if (len(element) >= 1):
+        #         print("[", end=" ")
+        #         for x in element:
+        #             print(x, end=" ")
+        #         print(']', end=" ")
+        #     else:
+        #         print("[ ]", end=" ")
+        # print()
+    print(" ".join([str(ball.get_index()) for ball in ball_list]), end="")
+
+
