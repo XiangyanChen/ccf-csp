@@ -47,14 +47,20 @@ def is_merge(ip1, ip2):
         return True
     else:
         return False
-def set_to_ip(ip_binary_str):
-    ip_address  = ""
-    for i in range(4):
-        sum =0
-        for x in ip_binary_str[i * 8:(i+1) * 8]:
-            sum = sum*2+int(x)
-        ip_address += str(sum) + "."
-    return ip_address[:-1]
+def convert2new_ip(ip1, ip2):   #构造新的ip
+    if (ip1.ip_binary_str < ip2.ip_binary_str):
+        return IP(ip1.ip_address_str + "/" + str(ip1.length-1))
+    else:
+        return IP(ip2.ip_address_str + "/" + str(ip2.length-1))
+# ip_address  = ""
+    # ip_binary_str = ip.ip_binary_str[:ip.length-1]
+    # for i in range(4):
+    #     sum =0
+    #     for x in ip_binary_str[i * 8:(i+1) * 8]:
+    #         sum = sum*2+int(x)
+    #     ip_address += str(sum) + "."
+    # return IP(ip_address[:-1] + "/" + str(ip.length-1))
+
 if __name__ == "__main__":
     n = int(input())    #number of input
     ip_list = list()
@@ -66,7 +72,7 @@ if __name__ == "__main__":
             ip_list.append(ip)
         except:
             pass
-    ip_list = sorted(ip_list, key=lambda x:x.length)
+    ip_list = sorted(ip_list, key=lambda x:x.length)    #第一步
     ip_list = sorted(ip_list, key=lambda x:x.ip_binary_str)
     # ip_list = sorted(ip_list, key=functools.cmp_to_key(cmp1))   #ip地址排序，ip分成数组
     new_ip_list = list()
@@ -83,22 +89,35 @@ if __name__ == "__main__":
                     pre_ip = ip
                     break
     ip_list = list()
-    for ip in new_ip_list:
+    for ip in new_ip_list:  #第三步
         if (len(ip_list)) == 0:
             ip_list.append(ip)
         else:
-            if(is_merge(ip_list[-1], ip)):
-                new_ip = IP(set_to_ip(ip.ip_binary_str[:ip.length-1])+ "/" + str(ip.length-1))
-                # print(new_ip)
-                pre_ip = ip_list.pop()
-                if (len(ip_list) > 0):
-                    while(is_merge(ip_list[-1], new_ip)):
-                        pre_ip = ip_list.pop()
-                        new_ip = IP(set_to_ip(new_ip.ip_binary_str[:new_ip.length-1]) + "/" + str(new_ip.length-1))
-                        if (len(ip_list) == 0):
-                            break
+            if (is_merge(ip_list[-1], ip)):
+                new_ip = ip
+                while (is_merge(ip_list[-1], new_ip)):
+                    pre_ip = ip_list.pop()
+                    new_ip = convert2new_ip(pre_ip, new_ip)
+                    if (len(ip_list) == 0):
+                        break
                 ip_list.append(new_ip)
             else:
                 ip_list.append(ip)
+    #     if (len(ip_list)) == 0:
+    #         ip_list.append(ip)
+    #     else:
+    #         if(is_merge(ip_list[-1], ip)):
+    #             new_ip = IP(set_to_ip(ip.ip_binary_str[:ip.length-1])+ "/" + str(ip.length-1))
+    #             # print(new_ip)
+    #             pre_ip = ip_list.pop()
+    #             if (len(ip_list) > 0):
+    #                 while(is_merge(ip_list[-1], new_ip)):
+    #                     pre_ip = ip_list.pop()
+    #                     new_ip = IP(set_to_ip(new_ip.ip_binary_str[:new_ip.length-1]) + "/" + str(new_ip.length-1))
+    #                     if (len(ip_list) == 0):
+    #                         break
+    #             ip_list.append(new_ip)
+    #         else:
+    #             ip_list.append(ip)
     for ip in ip_list:
         print(ip)
