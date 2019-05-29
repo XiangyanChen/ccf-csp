@@ -45,15 +45,24 @@ if __name__ == "__main__":
     # print(matcher_list)
     data_list = list()
     for i in range(m):  #每条匹配
-        results = input().split("/")
+        source = input()
+
+        results = source.split("/")
         for mathcer in matcher_list:
             param_list = list()
             rule_list = mathcer.rule.split("/")
+            i = 0
             flag = True
-            for result , rule in zip(results, rule_list):
+            path_flag = False
+            while (i < len(results) and i < len(rule_list)):
+                rule = rule_list[i]
+                result = results[i]
+                i += 1
                 if rule == "<int>":
                     if result.isdigit():
-                        param_list.append(str(int(result)))
+                        if (int(result) != 0):
+                            param_list.append(str(int(result)))
+
                         continue
                     else:
                         flag = False
@@ -62,14 +71,28 @@ if __name__ == "__main__":
                     param_list.append(result)
                     continue
                 elif rule == "<path>":
-                    index = results.index(result)
-
-                    param_list.append("/".join(results[index:]))
+                    index = 0
+                    for j in range(i-1):
+                        index = source.index("/", index)
+                        index += 1
+                    path_flag = True
+                    param_list.append(source[index:])
+                    # param_list.append("/".join(results[index:]))
                     break
                 elif (rule != result):
                     flag = False
+
                     break
-            if (flag == True):
+                #i += 1
+            if (i < len(results)):
+                 flag = False
+            #     data_list.append("404")
+            #     break
+            if (i < len(rule_list)):
+                 flag = False
+            #     data_list.append("404")
+            #     break
+            if (flag == True or path_flag == True):
                 data_list.append(mathcer.name + " " + " ".join(param_list))
                 break
         else:
